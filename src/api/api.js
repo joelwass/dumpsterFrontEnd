@@ -10,7 +10,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       // if we have questions already, just return the next one, if not, grab them all again
       if (module.exports.triviaQuestions.length === 0) {
-        return fetch(`http://localhost:3000/api/v1/trivia`, {
+        return fetch(`https://dumpster.herokuapp.com/api/v1/trivia`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
