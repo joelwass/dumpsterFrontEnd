@@ -28,39 +28,75 @@ class App extends Component {
     console.log(this.state);
   }
 
-  // send delete request to api, and remove the row with the id passed in from the table
-  _deleteTrivia = (id) => {
-    console.log(id);
-  }
-
   // update the state of the trivia where id = the id passed in
-  _updateTrivia = (id) => {
-    console.log(id);
+  _updateTrivia = async (index) => {
+    try {
+      let updateResult = await API.updateTriviaQuestion();
+      console.log(updateResult);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  _updateTriviaQuestion = (id) => {
-    console.log(id);
+  _updateTriviaQuestion = (index, value) => {
+    console.log(index);
+    let trivia = this.state.trivia;
+    let currentTriviaQuestion = trivia[index];
+    currentTriviaQuestion.question = value;
+    trivia[index] = currentTriviaQuestion;
+    this.setState({ trivia });
   }
 
-  _updateTriviaAnswer = (id) => {
-    console.log(id);
+  _updateTriviaAnswer = (index, value) => {
+    console.log(index);
+    let trivia = this.state.trivia;
+    let currentTriviaQuestion = trivia[index];
+    currentTriviaQuestion.answer = value;
+    trivia[index] = currentTriviaQuestion;
+    this.setState({ trivia });
   }
 
-  _updateTriviaIncAnswer1 = (id) => {
-    console.log(id);
+  _updateTriviaIncAnswer1 = (index, value) => {
+    console.log(index);
+    let trivia = this.state.trivia;
+    let currentTriviaQuestion = trivia[index];
+    currentTriviaQuestion.incAnswer1 = value;
+    trivia[index] = currentTriviaQuestion;
+    this.setState({ trivia });
   }
 
-  _updateTriviaIncAnswer2 = (id) => {
-    console.log(id);
+  _updateTriviaIncAnswer2 = (index, value) => {
+    console.log(index);
+    let trivia = this.state.trivia;
+    let currentTriviaQuestion = trivia[index];
+    currentTriviaQuestion.incAnswer2 = value;
+    trivia[index] = currentTriviaQuestion;
+    this.setState({ trivia });
   }
 
-  _updateTriviaIncAnswer3 = (id) => {
-    console.log(id);
+  _updateTriviaIncAnswer3 = (index, value) => {
+    console.log(index);
+    let trivia = this.state.trivia;
+    let currentTriviaQuestion = trivia[index];
+    currentTriviaQuestion.incAnswer3 = value;
+    trivia[index] = currentTriviaQuestion;
+    this.setState({ trivia });
   }
 
   _inputPass = (pass) => {
     console.log(pass);
-    if (pass === 'dumpsterPass') this._fetchTrivia();
+    this.setState({ password: pass });
+  }
+
+  _inputEmail = (email) => {
+    console.log(email);
+    this.setState({ email });
+  }
+
+  _login = async () => {
+    // call api login function
+    // on success, call this._fetchTrivia()
+    const loginResult = await API.login({ email: this.state.email, password: this.state.password });
   }
 
 
@@ -73,27 +109,23 @@ class App extends Component {
               <label htmlFor="idLabel">Question: { item.id } </label>
               <input
                 value={ item.question }
-                onChange={ () => this._updateTriviaQuestion(item.id) }
+                onChange={ (e) => this._updateTriviaQuestion(i, e.target.value) }
                 style={{ width: '80%'}}/>
               <br />
               <input
                 value={ item.answer }
-                onChange={ () => this._updateTriviaAnswer(item.id) }/>
+                onChange={ (e) => this._updateTriviaAnswer(i, e.target.value) }/>
               <input
                 value={ item.incAnswer1 }
-                onChange={ () => this._updateTriviaIncAnswer1(item.id) }/>
+                onChange={ (e) => this._updateTriviaIncAnswer1(i, e.target.value) }/>
               <input
                 value={ item.incAnswer2 }
-                onChange={ () => this._updateTriviaIncAnswer2(item.id) }/>
+                onChange={ (e) => this._updateTriviaIncAnswer2(i, e.target.value) }/>
               <input
                 value={ item.incAnswer3 }
-                onChange={ () => this._updateTriviaIncAnswer3(item.id) }/>
+                onChange={ (e) => this._updateTriviaIncAnswer3(i, e.target.value) }/>
               <button
-                onClick={ () => this._deleteTrivia(item.id) }>
-                Delete
-              </button>
-              <button
-                onClick={ () => this._updateTrivia(item.id) }>
+                onClick={ () => this._updateTrivia(i) }>
                 Update
               </button>
             </div>
@@ -103,14 +135,8 @@ class App extends Component {
     }
   }
 
-
-  // make loading page
-  // if trivia is undefined, then show the loading page
-  // otherwise map over this.state.trivia and show a row with all info, question, answer, incAnswer1, incAnswer2, incAnswer3 and delete button
   // delete button will fire, ope no delete route yet
   // update button will send to update endpoint with the questions input fields.
-
-  // have series of inputs at the top of the page regardless of getting trivia, that will post to createTrivia with input fields
 
   render() {
     if (!this.state.isReady) {
@@ -120,11 +146,20 @@ class App extends Component {
             <img src={logo} className="App-logo" alt="logo" />
             <h2>Welcome to the Dumpster Trivia Admin</h2>
           </div>
-
+          Email:
+          <input type="text"
+                 style={{ width: '40%' }}
+                 onChange={ (e) => this._inputEmail(e.target.value) }/>
+          <br />
           Password:
           <input type="text"
-            style={{ width: '80%' }}
+            style={{ width: '40%' }}
             onChange={ (e) => this._inputPass(e.target.value) }/>
+          <br />
+          <button
+            onClick={ () => this._login() }>
+            Login
+          </button>
         </div>
       )
     }
