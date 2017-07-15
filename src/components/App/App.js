@@ -38,51 +38,6 @@ class App extends Component {
     }
   }
 
-  _updateTriviaQuestion = (index, value) => {
-    console.log(index);
-    let trivia = this.state.trivia;
-    let currentTriviaQuestion = trivia[index];
-    currentTriviaQuestion.question = value;
-    trivia[index] = currentTriviaQuestion;
-    this.setState({ trivia });
-  }
-
-  _updateTriviaAnswer = (index, value) => {
-    console.log(index);
-    let trivia = this.state.trivia;
-    let currentTriviaQuestion = trivia[index];
-    currentTriviaQuestion.answer = value;
-    trivia[index] = currentTriviaQuestion;
-    this.setState({ trivia });
-  }
-
-  _updateTriviaIncAnswer1 = (index, value) => {
-    console.log(index);
-    let trivia = this.state.trivia;
-    let currentTriviaQuestion = trivia[index];
-    currentTriviaQuestion.incAnswer1 = value;
-    trivia[index] = currentTriviaQuestion;
-    this.setState({ trivia });
-  }
-
-  _updateTriviaIncAnswer2 = (index, value) => {
-    console.log(index);
-    let trivia = this.state.trivia;
-    let currentTriviaQuestion = trivia[index];
-    currentTriviaQuestion.incAnswer2 = value;
-    trivia[index] = currentTriviaQuestion;
-    this.setState({ trivia });
-  }
-
-  _updateTriviaIncAnswer3 = (index, value) => {
-    console.log(index);
-    let trivia = this.state.trivia;
-    let currentTriviaQuestion = trivia[index];
-    currentTriviaQuestion.incAnswer3 = value;
-    trivia[index] = currentTriviaQuestion;
-    this.setState({ trivia });
-  }
-
   _inputPass = (pass) => {
     console.log(pass);
     this.setState({ password: pass });
@@ -94,11 +49,22 @@ class App extends Component {
   }
 
   _login = async () => {
-    // call api login function
-    // on success, call this._fetchTrivia()
-    const loginResult = await API.login({ email: this.state.email, password: this.state.password });
+    try {
+      const loginResult = await API.login({ email: this.state.email, password: this.state.password });
+      if (!loginResult.success) alert('incorrect password');
+      if (loginResult.success) this._fetchTrivia();
+    } catch (e) {
+      console.log(e);
+    }
   }
 
+  _updateTriviaQuestionProperty = (index, value, property) => {
+    let trivia = this.state.trivia;
+    let currentTriviaQuestion = trivia[index];
+    currentTriviaQuestion[property] = value;
+    trivia[index] = currentTriviaQuestion;
+    this.setState({ trivia });
+  }
 
   _triviaView = () => {
     if (this.state.trivia) {
@@ -109,21 +75,21 @@ class App extends Component {
               <label htmlFor="idLabel">Question: { item.id } </label>
               <input
                 value={ item.question }
-                onChange={ (e) => this._updateTriviaQuestion(i, e.target.value) }
+                onChange={ (e) => this._updateTriviaQuestionProperty(i, e.target.value, 'question') }
                 style={{ width: '80%'}}/>
               <br />
               <input
                 value={ item.answer }
-                onChange={ (e) => this._updateTriviaAnswer(i, e.target.value) }/>
+                onChange={ (e) => this._updateTriviaQuestionProperty(i, e.target.value, 'answer') }/>
               <input
                 value={ item.incAnswer1 }
-                onChange={ (e) => this._updateTriviaIncAnswer1(i, e.target.value) }/>
+                onChange={ (e) => this._updateTriviaQuestionProperty(i, e.target.value, 'incAnswer1') }/>
               <input
                 value={ item.incAnswer2 }
-                onChange={ (e) => this._updateTriviaIncAnswer2(i, e.target.value) }/>
+                onChange={ (e) => this._updateTriviaQuestionProperty(i, e.target.value, 'incAnswer2') }/>
               <input
                 value={ item.incAnswer3 }
-                onChange={ (e) => this._updateTriviaIncAnswer3(i, e.target.value) }/>
+                onChange={ (e) => this._updateTriviaQuestionProperty(i, e.target.value, 'incAnswer3') }/>
               <button
                 onClick={ () => this._updateTrivia(i) }>
                 Update

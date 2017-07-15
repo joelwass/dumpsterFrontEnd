@@ -1,8 +1,9 @@
-const base_url = 'localhost:3000';
+const base_url = 'http://localhost:3000';
 
 module.exports = {
 
   triviaQuestions: [],
+  auth: '',
 
   // get trivia questions from database and store them locally
   getTriviaQuestions: function() {
@@ -59,9 +60,13 @@ module.exports = {
         },
         body: JSON.stringify(body),
       }).then(result =>  result.json()).then(result => {
-        return result;
+        if (result.success) {
+          // set the refresh token to use for future requests
+          module.exports.auth = result.refreshToken;
+        }
+        resolve(result);
       }).catch(err => {
-        console.log(err);
+        reject(err);
       });
     })
   },
