@@ -16,6 +16,7 @@ module.exports = {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'Auth': module.exports.auth,
           },
         }).then(result => result.json()).then(result => {
           if (result.success !== true) reject(result);
@@ -31,8 +32,8 @@ module.exports = {
     });
   },
 
-  updateTriviaQuestion: function(id, body) {
-    console.log('updating trivia id:', id);
+  updateTriviaQuestion: function(body) {
+    console.log('updating trivia id:', body.id);
 
     return new Promise((resolve, reject) => {
       // send update request
@@ -40,9 +41,12 @@ module.exports = {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Auth': module.exports.auth,
         },
+        body: JSON.stringify(body),
       }).then(result => result.json()).then(result => {
-        console.log(result);
+        if (result.success !== true) reject(result);
+        resolve(result);
       }).catch(err => {
         reject(err);
       })

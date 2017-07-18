@@ -8,6 +8,7 @@ class App extends Component {
   state = {
     isReady: false,
     trivia: [],
+    loggedIn: false,
   }
 
   componentWillMount() {
@@ -20,21 +21,44 @@ class App extends Component {
       this.setState({ trivia, isReady: true });
     } catch (e) {
       console.log(e);
+      this._handleRejection(e);
     }
   }
 
   // make new
   _addTrivia = () => {
     console.log(this.state);
+    //const newBody = {
+    //
+    //}
   }
 
   // update the state of the trivia where id = the id passed in
   _updateTrivia = async (index) => {
     try {
-      let updateResult = await API.updateTriviaQuestion();
-      console.log(updateResult);
+      const triviaQ = this.state.trivia[index];
+      const body = {
+        id: triviaQ.id,
+        question: triviaQ.question,
+        answer: triviaQ.answer,
+        incAnswer1: triviaQ.incAnswer1,
+        incAnswer2: triviaQ.incAnswer2,
+        incAnswer3: triviaQ.incAnswer3
+      };
+      let updateResponse = await API.updateTriviaQuestion(body);
+      alert(`question ${ updateResponse.updatedTrivia.id } updated`);
     } catch (e) {
       console.log(e);
+      this._handleRejection(e);
+    }
+  }
+
+  _handleRejection = (err) => {
+    if (err.message === 'Invalid Token') { // invalid token returned
+      this.setState({ loggedIn: false }); // log them out
+      alert('unauthorized breach'); // prompt a breach
+    } else {
+      alert('error occured, check console');
     }
   }
 
@@ -52,7 +76,10 @@ class App extends Component {
     try {
       const loginResult = await API.login({ email: this.state.email, password: this.state.password });
       if (!loginResult.success) alert('incorrect password');
-      if (loginResult.success) this._fetchTrivia();
+      if (loginResult.success) {
+        this.setState({ loggedIn: true });
+        this._fetchTrivia();
+      }
     } catch (e) {
       console.log(e);
     }
@@ -105,7 +132,7 @@ class App extends Component {
   // update button will send to update endpoint with the questions input fields.
 
   render() {
-    if (!this.state.isReady) {
+    if (!this.state.loggedIn) {
       return (
         <div className="App">
           <div className="App-header">
