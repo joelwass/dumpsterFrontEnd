@@ -53,6 +53,27 @@ module.exports = {
     })
   },
 
+  createTriviaQuestion: function(body) {
+    console.log('adding trivia q: ', body.question);
+
+    return new Promise((resolve, reject) => {
+      // send update request
+      return fetch(`${base_url}/api/v1/trivia`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Auth': module.exports.auth,
+        },
+        body: JSON.stringify(body),
+      }).then(result => result.json()).then(result => {
+        if (result.success !== true) reject(result);
+        resolve(result);
+      }).catch(err => {
+        reject(err);
+      })
+    })
+  },
+
   login: function(body) {
     console.log('logging in');
 

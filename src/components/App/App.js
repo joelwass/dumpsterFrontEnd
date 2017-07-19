@@ -26,11 +26,27 @@ class App extends Component {
   }
 
   // make new
-  _addTrivia = () => {
-    console.log(this.state);
-    //const newBody = {
-    //
-    //}
+  _addTrivia = async () => {
+    const reqBody = {
+      question: this.state.newTriviaQuestion,
+      answer: this.state.newTriviaAnswer,
+      incAnswer1: this.state.newTriviaIncAnswer1,
+      incAnswer2: this.state.newTriviaIncAnswer2,
+      incAnswer3: this.state.newTriviaIncAnswer3,
+      category: this.state.newTriviaCategory,
+    };
+    // check to make sure no fields are undefined
+    for (var i in reqBody) {
+      if (!reqBody[i] || reqBody[i] === '') {
+        alert('not all required fields are filled out to add a question');
+        break;
+      }
+    }
+    console.log(reqBody);
+
+    // make api request
+    const addQuestionResponse = await API.createTriviaQuestion(reqBody);
+    console.log(addQuestionResponse);
   }
 
   // update the state of the trivia where id = the id passed in
