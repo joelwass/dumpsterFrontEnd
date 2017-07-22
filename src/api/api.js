@@ -4,6 +4,7 @@ module.exports = {
 
   triviaQuestions: [],
   auth: '',
+  currentMaxId: 0,
 
   // get trivia questions from database and store them locally
   getTriviaQuestions: function() {
@@ -22,6 +23,13 @@ module.exports = {
           if (result.success !== true) reject(result);
           // get out the trivia questions from the response
           module.exports.triviaQuestions = result.trivia;
+          // get the max trivia id, so if we create a new one we have an id for it
+          module.exports.currentMaxId = result.trivia.reduce((id, triviaQ) => {
+            if (triviaQ.id > id) {
+              return triviaQ.id;
+            }
+            return id;
+          }, module.exports.currentMaxId);
           resolve(module.exports.triviaQuestions);
         }).catch(err => {
           reject(err);
@@ -55,6 +63,12 @@ module.exports = {
 
   createTriviaQuestion: function(body) {
     console.log('adding trivia q: ', body.question);
+    console.log(module.exports.currentMaxId);
+    
+    // set the body id to that of the currentMaxId + 1
+    body.id = module.exports.currentMaxId + 1;
+    // increment the currentMaxId
+    module.exports.currentMaxId += 1;
 
     return new Promise((resolve, reject) => {
       // send update request

@@ -35,18 +35,20 @@ class App extends Component {
       incAnswer3: this.state.newTriviaIncAnswer3,
       category: this.state.newTriviaCategory,
     };
-    // check to make sure no fields are undefined
+    // check to make sure no fields are undefined or empty
     for (var i in reqBody) {
       if (!reqBody[i] || reqBody[i] === '') {
         alert('not all required fields are filled out to add a question');
         break;
       }
     }
-    console.log(reqBody);
-
     // make api request
-    const addQuestionResponse = await API.createTriviaQuestion(reqBody);
-    console.log(addQuestionResponse);
+    try {
+      await API.createTriviaQuestion(reqBody);
+      alert('Question added');
+    } catch (e) {
+      this._handleRejection(e);
+    }
   }
 
   // update the state of the trivia where id = the id passed in
@@ -64,17 +66,17 @@ class App extends Component {
       let updateResponse = await API.updateTriviaQuestion(body);
       alert(`question ${ updateResponse.updatedTrivia.id } updated`);
     } catch (e) {
-      console.log(e);
       this._handleRejection(e);
     }
   }
 
   _handleRejection = (err) => {
+    console.log(err);
     if (err.message === 'Invalid Token') { // invalid token returned
       this.setState({ loggedIn: false }); // log them out
       alert('unauthorized breach'); // prompt a breach
     } else {
-      alert('error occured, check console');
+      alert(`Error occured with message: ${ err.message }, check console`);
     }
   }
 
