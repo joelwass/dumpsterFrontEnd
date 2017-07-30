@@ -63,7 +63,6 @@ module.exports = {
 
   createTriviaQuestion: function(body) {
     console.log('adding trivia q: ', body.question);
-    console.log(module.exports.currentMaxId);
     
     // set the body id to that of the currentMaxId + 1
     body.id = module.exports.currentMaxId + 1;
