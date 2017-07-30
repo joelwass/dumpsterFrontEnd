@@ -1,4 +1,7 @@
 const base_url = process.env.NODE_ENV === 'prod' ? 'https://dumpster.herokuapp.com/api/v1/' : 'http://localhost:3000';
+console.log(base_url);
+console.log(process.env.NODE_ENV);
+console.log(process.env);
 
 module.exports = {
 
@@ -63,7 +66,7 @@ module.exports = {
 
   createTriviaQuestion: function(body) {
     console.log('adding trivia q: ', body.question);
-    
+
     // set the body id to that of the currentMaxId + 1
     body.id = module.exports.currentMaxId + 1;
     // increment the currentMaxId
