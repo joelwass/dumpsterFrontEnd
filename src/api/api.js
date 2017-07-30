@@ -1,4 +1,4 @@
-const base_url = 'http://localhost:3000';
+const base_url = process.env.NODE_ENV === 'prod' ? 'https://dumpster.herokuapp.com/api/v1/' : 'http://localhost:3000';
 
 module.exports = {
 
